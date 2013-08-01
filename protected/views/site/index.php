@@ -33,20 +33,7 @@ $this->pageTitle=Yii::app()->name;
 	?>
 	<h2>Search Results</h2>
 	<?php
-			$query = $_GET['q'];
-
-			// Create a client instance
-			$client = new TMDBClient(Yii::app()->params['apiRootUrl'], Yii::app()->params['apiKey']);
-
-			// Look for the person's id
-			$client->searchPerson($query);
-			$actor = $client->response->results[0];
-
-			// Look for all the movies where the person has acted, and sort them by release date
-			$client->getMoviesByPerson($actor->id);
-			$movies = $client->response->cast;
 			if ($movies) {
-				usort($movies, "release_date_cmp");
 	?>
 
 	<section id="movies" class="large-8 small-8 large-uncentered small-centered columns">

@@ -27,9 +27,25 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
+		$query = $_GET['q'];
+
+		// Create a TMDB client instance
+		$client = new TMDBClient(Yii::app()->params['apiRootUrl'], Yii::app()->params['apiKey']);
+
+		// Look for the person's id
+		$client->searchPerson($query);
+		$actor = $client->response->results[0];
+
+		// Look for all the movies where the person has acted, and sort them by release date
+		$client->getMoviesByPerson($actor->id);
+		$movies = $client->response->cast;
+		if ($movies) {
+			usort($movies, "release_date_cmp");
+		}
+
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index');
+		$this->render('index', array('client'=>$client, 'actor'=>$actor, 'movies'=>$movies));
 	}
 
 	/**
