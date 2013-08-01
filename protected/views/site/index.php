@@ -4,17 +4,123 @@
 $this->pageTitle=Yii::app()->name;
 ?>
 
-<h1>Welcome to <i><?php echo CHtml::encode(Yii::app()->name); ?></i></h1>
+<aside class="row">
+	<header class="large-12 columns">
+		<h1><?php echo $this->pageTitle; ?></h1>
+	</header>
 
-<p>Congratulations! You have successfully created your Yii application.</p>
+	<form action="?" id="search-form" class="large-12 columns">
+		<fieldset class="row">
+			<legend>Search movies</legend>
 
-<p>You may change the content of this page by modifying the following two files:</p>
-<ul>
-	<li>View file: <code><?php echo __FILE__; ?></code></li>
-	<li>Layout file: <code><?php echo $this->getLayoutFile('main'); ?></code></li>
-</ul>
+			<div class="small-12 large-2 columns">
+				<label for="q" class="inline">Actor/Actress name:</label>
+			</div>
 
-<p>For more details on how to further develop this application, please read
-the <a href="http://www.yiiframework.com/doc/">documentation</a>.
-Feel free to ask in the <a href="http://www.yiiframework.com/forum/">forum</a>,
-should you have any questions.</p>
+			<div class="small-12 large-8 columns">
+				<input type="text" name="q" id="q" value="<?php if (array_key_exists('q',$_GET)) { echo $_GET['q']; } ?>">
+			</div>
+
+			<div class="small-12 large-2 columns">
+				<input type="submit" class="button postfix" value="Search">
+			</div>
+		</fieldset>
+	</form>
+</aside>
+<section class="row">
+	<?php
+		if ($_GET && $_GET['q']) {
+	?>
+	<h2>Search Results</h2>
+	<?php
+			$query = $_GET['q'];
+
+			// Create a client instance
+			$client = new TMDBClient(Yii::app()->params['apiRootUrl'], Yii::app()->params['apiKey']);
+
+			// Look for the person's id
+			$client->searchPerson($query);
+			$actor = $client->response->results[0];
+
+			// Look for all the movies where the person has acted, and sort them by release date
+			$client->getMoviesByPerson($actor->id);
+			$movies = $client->response->cast;
+			if ($movies) {
+				usort($movies, "release_date_cmp");
+	?>
+
+	<section id="movies" class="large-8 small-8 large-uncentered small-centered columns">
+		<?php
+			foreach ($movies as &$movie) {
+
+				if ($movie->poster_path) {
+					$img_url = $client->config->images->base_url . $client->config->images->poster_sizes[1] . $movie->poster_path;
+				} else {
+					$img_url = 'http://placehold.it/154x231/&amp;text=N/A';
+				}
+
+		?>
+			<article class="row">
+				<div class="large-3 columns">
+					<img data-original="<?php echo $img_url; ?>" alt="<?php echo $movie->title; ?>" src="img/loader.gif">
+				</div>
+				<div class="large-9 columns">
+					<header>
+						<h3><?php echo $movie->title; ?></h3>
+					</header>
+					<section>
+						<ul class="no-bullet">
+							<?php if ($movie->release_date) { ?>
+								<li>
+									<i class="foundicon-calendar"></i>
+									<strong>Release Date:</strong>
+									<?php echo $movie->release_date; ?>
+								</li>
+							<?php } ?>
+							<?php if ($movie->original_title) { ?>
+								<li>
+									<i class="foundicon-globe"></i>
+									<strong>Original Title:</strong>
+									<?php echo $movie->original_title; ?>
+								</li>
+							<?php } ?>
+							<?php if ($movie->character) { ?>
+								<li>
+									<i class="foundicon-address-book"></i>
+									<strong>Character:</strong>
+									<?php echo $movie->character; ?>
+								</li>
+							<?php } ?>
+						</ul>
+					</section>
+				</div>
+			</article>
+			<hr/>
+		<?php
+			}
+		?>
+	</section>
+	<aside id="actor" class="large-3 small-4 large-uncentered small-centered columns panel">
+		<?php
+		if ($actor->profile_path) {
+			$img_url = $client->config->images->base_url . $client->config->images->profile_sizes[2] . $actor->profile_path;
+		} else {
+			$img_url = 'http://placehold.it/208x271/&amp;text=N/A';
+		}
+		?>
+		<img src="<?php echo $img_url; ?>" alt="<?php echo $actor->name; ?>">
+		<h3><?php echo $actor->name; ?></h3>
+	</aside>
+
+	<?php
+			} else {
+	?>
+
+	<p class="alert-box alert">We're sorry we couldn't find any results for "<?php echo $_GET['q']; ?>"</p>
+
+	<?php
+
+			}
+		}
+	?>
+</section>
