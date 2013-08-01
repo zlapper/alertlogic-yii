@@ -1,58 +1,98 @@
 <?php
 
-class SiteController extends Controller
-{
-	/**
-	 * Declares class-based actions.
-	 */
-	public function actions()
-	{
-		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-		);
-	}
+class SiteController extends Controller {
 
 	/**
+	 * actionIndex (search)
+	 *
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
+	 *
+	 * @access public
 	 */
-	public function actionIndex()
-	{
+	public function actionIndex() {
+		$client = null;
 		$query = $_GET['q'];
+		$type = $_GET['type'];
+		$actors = null;
+		$movies = array();
 
-		// Create a TMDB client instance
-		$client = new TMDBClient(Yii::app()->params['apiRootUrl'], Yii::app()->params['apiKey']);
+		if ($query) {
+			// Create a TMDB client instance
+			$client = new TMDBClient(Yii::app()->params['apiRootUrl'], Yii::app()->params['apiKey']);
 
-		// Look for the person's id
-		$client->searchPerson($query);
-		$actor = $client->response->results[0];
-
-		// Look for all the movies where the person has acted, and sort them by release date
-		$client->getMoviesByPerson($actor->id);
-		$movies = $client->response->cast;
-		if ($movies) {
-			usort($movies, "release_date_cmp");
+			if ($type == 'person') {
+				$client->searchPerson($query);
+				$actors = $client->response->results;
+			} else if ($type == 'movie') {
+				$client->searchMovie($query);
+				$movies = $client->response->results;
+			}
 		}
 
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index', array('query'=>$query, 'client'=>$client, 'actor'=>$actor, 'movies'=>$movies));
+		$this->render('index', array('query'=>$query, 'type'=> $type, 'client'=>$client, 'actors'=>$actors, 'movies'=>$movies));
+	}
+
+
+	/**
+	 * actionPerson
+	 *
+	 * @access public
+	 */
+	public function actionPerson() {
+		$client = null;
+		$id = $_GET['id'];
+		$person = null;
+		$movies = null;
+
+		if ($id) {
+			// Create a TMDB client instance
+			$client = new TMDBClient(Yii::app()->params['apiRootUrl'], Yii::app()->params['apiKey']);
+
+			// Get the person details
+			$client->getPersonDetails($id);
+			$person = $client->response;
+
+			// Get the movies where it has acted, sorted by date
+			$client->getMoviesByPersonId($person->id);
+			$movies = $client->response->cast;
+			if ($movies) {
+				usort($movies, "release_date_cmp");
+			}
+		}
+
+		$this->render('person', array('client'=>$client, 'id'=> $id, 'person'=>$person, 'movies'=>$movies));
+	}
+
+
+	/**
+	 * actionMovie
+	 *
+	 * @access public
+	 */
+	public function actionMovie() {
+		$client = null;
+		$id = $_GET['id'];
+		$movie = null;
+
+		if ($id) {
+			// Create a TMDB client instance
+			$client = new TMDBClient(Yii::app()->params['apiRootUrl'], Yii::app()->params['apiKey']);
+
+			// Get the person details
+			$client->getMovieDetails($id);
+			$movie = $client->response;
+		}
+
+		$this->render('person', array('client'=>$client, 'id'=> $id, 'movie'=>$movie));
 	}
 
 	/**
 	 * This is the action to handle external exceptions.
 	 */
-	public function actionError()
-	{
+	public function actionError() {
 		if($error=Yii::app()->errorHandler->error)
 		{
 			if(Yii::app()->request->isAjaxRequest)
@@ -61,65 +101,6 @@ class SiteController extends Controller
 				$this->render('error', $error);
 		}
 	}
-
-	/**
-	 * Displays the contact page
-	 */
-	public function actionContact()
-	{
-		$model=new ContactForm;
-		if(isset($_POST['ContactForm']))
-		{
-			$model->attributes=$_POST['ContactForm'];
-			if($model->validate())
-			{
-				$name='=?UTF-8?B?'.base64_encode($model->name).'?=';
-				$subject='=?UTF-8?B?'.base64_encode($model->subject).'?=';
-				$headers="From: $name <{$model->email}>\r\n".
-					"Reply-To: {$model->email}\r\n".
-					"MIME-Version: 1.0\r\n".
-					"Content-type: text/plain; charset=UTF-8";
-
-				mail(Yii::app()->params['adminEmail'],$subject,$model->body,$headers);
-				Yii::app()->user->setFlash('contact','Thank you for contacting us. We will respond to you as soon as possible.');
-				$this->refresh();
-			}
-		}
-		$this->render('contact',array('model'=>$model));
-	}
-
-	/**
-	 * Displays the login page
-	 */
-	public function actionLogin()
-	{
-		$model=new LoginForm;
-
-		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
-
-		// collect user input data
-		if(isset($_POST['LoginForm']))
-		{
-			$model->attributes=$_POST['LoginForm'];
-			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login())
-				$this->redirect(Yii::app()->user->returnUrl);
-		}
-		// display the login form
-		$this->render('login',array('model'=>$model));
-	}
-
-	/**
-	 * Logs out the current user and redirect to homepage.
-	 */
-	public function actionLogout()
-	{
-		Yii::app()->user->logout();
-		$this->redirect(Yii::app()->homeUrl);
-	}
 }
+
+?>
