@@ -1,5 +1,9 @@
-<?php /* @var $this Controller */ ?>
-<!DOCTYPE html>
+<?php
+/* @var $this SiteController */
+
+$this->pageTitle=Yii::app()->name;
+
+?><!DOCTYPE html>
 <html class="no-js" lang="en">
 	<head>
 		<meta charset="utf-8">
@@ -21,6 +25,13 @@
 		<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/vendor/custom.modernizr.js"></script>
 	</head>
 	<body>
+
+		<div class="row">
+			<header class="large-12 columns">
+				<h1><?php echo $this->pageTitle; ?></h1>
+			</header>
+		</div>
+
 		<?php echo $content; ?>
 
 		<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/vendor/jquery-1.10.1.min.js"></script>

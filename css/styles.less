@@ -1,19 +1,68 @@
 // Author: Daniel Garcia
 
-#search-form {
-	input, label {
-		margin-bottom: 0.66em;
-	}
-}
+// General Styles
+	// Forms
+		input, label {
+			margin-bottom: 0.66em;
+		}
+		input[type=submit] {
+			height: 33px;
+			line-height: 33px;
+			margin-top: 23px;
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+		select {
+			border: 1px solid #ccc;
+			height: 33px;
+			box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+			color: rgba(0, 0, 0, 0.74902);
+			font-size: 14px;
+			&:focus {
+				box-shadow: 0 0 5px #999;
+				background: #fafafa;
+				border-color: #999;
+				outline: none;
+			}
+		}
+	// Lists
+		dl {
+			dt, dd {
+				float: left;
+			}
+			dt {
+				clear: left;
+				margin-right: 5px;
+			}
+			dd {
+				margin-bottom: 0.25em;
+			}
+		}
+	// Widgets
+		.actor {
+			&.small {
+				float: left !important;
+				text-align: center;
+				img {
+					max-height: 250px;
+				}
+			}
+		}
 
-@media only screen and (min-width: 768px) {
-	#actor {
-		float: right !important;
-	}
-}
+// Desktop only styles
+	// @media only screen and (min-width: 768px) {
+	// 	.actor {
+	// 		float: right !important;
+	// 	}
+	// }
 
-@media only screen and (max-width: 768px) {
-	h1, h2, h3, h4, div, li {
-		text-align: center;
+// Mobile only styles
+	@media only screen and (max-width: 768px) {
+		h1, h2, h3, h4, div, li {
+			text-align: center;
+		}
+		input[type=submit] {
+			margin-top: 0;
+			width: 100%;
+		}
 	}
-}

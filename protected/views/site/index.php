@@ -1,91 +1,39 @@
-<?php
-/* @var $this SiteController */
-
-$this->pageTitle=Yii::app()->name;
-?>
-
-<aside class="row">
-	<header class="large-12 columns">
-		<h1><?php echo $this->pageTitle; ?></h1>
-	</header>
-
-	<form action="?" id="search-form" class="large-12 columns">
+<section class="row">
+	<form action="?" id="search-form" class="custom large-12 columns">
 		<fieldset class="row">
 			<legend>Search movies</legend>
 
-			<div class="small-12 large-2 columns">
-				<label for="q" class="inline">Actor/Actress name:</label>
+			<div class="small-12 large-7 columns">
+				<label for="q">Name:</label>
+				<input type="text" name="q" id="q" value="<?php echo $_GET['q'] ?>">
 			</div>
 
-			<div class="small-12 large-8 columns">
-				<input type="text" name="q" id="q" value="<?php echo $query; ?>">
+			<div class="small-12 large-3 columns">
+				<label for="type">Type:</label>
+				<select name="type" id="type" >
+					<option value="person" <?php if ($type=='person') echo 'selected'; ?>>Actor/Actress</option>
+					<option value="movie" <?php if ($type=='movie') echo 'selected'; ?>>Movie</option>
+				</select>
 			</div>
 
 			<div class="small-12 large-2 columns">
-				<input type="submit" class="button postfix" value="Search">
+				<input type="submit" class="button" value="Search">
 			</div>
 		</fieldset>
 	</form>
-</aside>
+</section>
+<?php
+	if ($query):
+?>
 <section class="row">
-	<?php
-		if ($query):
-	?>
 	<h2>Search Results</h2>
 	<?php
-			if ($movies):
+		if ($type == 'person'):
+			if ($actors):
+				foreach ($actors as &$actor):
 	?>
-	<section id="movies" class="large-8 small-8 large-uncentered small-centered columns">
-		<?php
-				foreach ($movies as &$movie):
-
-					if ($movie->poster_path) {
-						$img_url = $client->config->images->base_url . $client->config->images->poster_sizes[1] . $movie->poster_path;
-					} else {
-						$img_url = 'http://placehold.it/154x231/&amp;text=N/A';
-					}
-		?>
-			<article class="row">
-				<div class="large-3 columns">
-					<img data-original="<?php echo $img_url; ?>" alt="<?php echo $movie->title; ?>" src="img/loader.gif">
-				</div>
-				<div class="large-9 columns">
-					<header>
-						<h3><?php echo $movie->title; ?></h3>
-					</header>
-					<section>
-						<ul class="no-bullet">
-							<?php if ($movie->release_date) { ?>
-								<li>
-									<i class="foundicon-calendar"></i>
-									<strong>Release Date:</strong>
-									<?php echo $movie->release_date; ?>
-								</li>
-							<?php } ?>
-							<?php if ($movie->original_title) { ?>
-								<li>
-									<i class="foundicon-globe"></i>
-									<strong>Original Title:</strong>
-									<?php echo $movie->original_title; ?>
-								</li>
-							<?php } ?>
-							<?php if ($movie->character) { ?>
-								<li>
-									<i class="foundicon-address-book"></i>
-									<strong>Character:</strong>
-									<?php echo $movie->character; ?>
-								</li>
-							<?php } ?>
-						</ul>
-					</section>
-				</div>
-			</article>
-			<hr/>
-		<?php
-				endforeach;
-		?>
-	</section>
-	<aside id="actor" class="large-3 small-4 large-uncentered small-centered columns panel">
+	<aside class="actor small large-4 small-6 columns">
+		<!-- <h3>Actor</h3> -->
 		<?php
 				if ($actor->profile_path) {
 					$img_url = $client->config->images->base_url . $client->config->images->profile_sizes[2] . $actor->profile_path;
@@ -93,15 +41,21 @@ $this->pageTitle=Yii::app()->name;
 					$img_url = 'http://placehold.it/208x271/&amp;text=N/A';
 				}
 		?>
-		<img src="<?php echo $img_url; ?>" alt="<?php echo $actor->name; ?>">
-		<h3><?php echo $actor->name; ?></h3>
+		<div class='panel'>
+			<a href="site/person/?q=<?php echo $_GET['q']; ?>&id=<?php echo $actor->id; ?>"><img src="<?php echo $img_url; ?>" alt="<?php echo $actor->name; ?>">
+			<h4><?php echo $actor->name; ?></h4></a>
+		</div>
 	</aside>
 	<?php
-			else:
+				endforeach; //actors
+			else: // if ($actors)
 	?>
-	<p class="alert-box alert">We're sorry we couldn't find any results for "<?php echo $query; ?>"</p>
+	<p class="alert-box alert">We're sorry we couldn't find any actor/actress for "<?php echo $query; ?>"</p>
 	<?php
-			endif; // if ($movies)
-		endif; // if ($query)
-	?>
+			endif; // if ($actors)
+			?>
 </section>
+<?php
+		endif; // if ($type)
+	endif; // if ($query)
+?>
