@@ -148,16 +148,57 @@ class TMDBClient extends RESTClient {
 	}
 
 	/**
-	 * getMoviesByPerson
+	 * getMoviesByPersonId
 	 *
 	 * Requests the movies with credits matching the given person id.
 	 *
-	 * @param string $person_id Description.
+	 * @param string $person_id Id of the person.
 	 *
 	 * @access public
 	 */
-	public function getMoviesByPerson($person_id) {
+	public function getMoviesByPersonId($person_id) {
 		$service = 'person/'.urlencode($person_id).'/credits';
+		$this->GET($service);
+	}
+
+	/**
+	 * searchMovie
+	 *
+	 * @param string $query Requests the movies matching the given name.
+	 *
+	 * @access public
+	 */
+	public function searchMovie($query) {
+		$service = 'search/movie';
+		$query = "query=".urlencode($query);
+		$this->GET($service, $query);
+	}
+
+	/**
+	 * getMovieDetails
+	 *
+	 * Requests the movies with credits matching the given person id.
+	 *
+	 * @param string $movie_id Id of the movie.
+	 *
+	 * @access public
+	 */
+	public function getMovieDetails($movie_id) {
+		$service = 'movie/'.urlencode($movie_id);
+		$this->GET($service);
+	}
+
+	/**
+	 * getPersonDetails
+	 *
+	 * Requests the movies with credits matching the given person id.
+	 *
+	 * @param string $person_id Id of the person.
+	 *
+	 * @access public
+	 */
+	public function getPersonDetails($person_id) {
+		$service = 'person/'.urlencode($person_id);
 		$this->GET($service);
 	}
 }
