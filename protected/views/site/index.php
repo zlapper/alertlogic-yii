@@ -18,7 +18,7 @@ $this->pageTitle=Yii::app()->name;
 			</div>
 
 			<div class="small-12 large-8 columns">
-				<input type="text" name="q" id="q" value="<?php if (array_key_exists('q',$_GET)) { echo $_GET['q']; } ?>">
+				<input type="text" name="q" id="q" value="<?php echo $query; ?>">
 			</div>
 
 			<div class="small-12 large-2 columns">
@@ -29,23 +29,21 @@ $this->pageTitle=Yii::app()->name;
 </aside>
 <section class="row">
 	<?php
-		if ($_GET && $_GET['q']) {
+		if ($query):
 	?>
 	<h2>Search Results</h2>
 	<?php
-			if ($movies) {
+			if ($movies):
 	?>
-
 	<section id="movies" class="large-8 small-8 large-uncentered small-centered columns">
 		<?php
-			foreach ($movies as &$movie) {
+				foreach ($movies as &$movie):
 
-				if ($movie->poster_path) {
-					$img_url = $client->config->images->base_url . $client->config->images->poster_sizes[1] . $movie->poster_path;
-				} else {
-					$img_url = 'http://placehold.it/154x231/&amp;text=N/A';
-				}
-
+					if ($movie->poster_path) {
+						$img_url = $client->config->images->base_url . $client->config->images->poster_sizes[1] . $movie->poster_path;
+					} else {
+						$img_url = 'http://placehold.it/154x231/&amp;text=N/A';
+					}
 		?>
 			<article class="row">
 				<div class="large-3 columns">
@@ -84,30 +82,26 @@ $this->pageTitle=Yii::app()->name;
 			</article>
 			<hr/>
 		<?php
-			}
+				endforeach;
 		?>
 	</section>
 	<aside id="actor" class="large-3 small-4 large-uncentered small-centered columns panel">
 		<?php
-		if ($actor->profile_path) {
-			$img_url = $client->config->images->base_url . $client->config->images->profile_sizes[2] . $actor->profile_path;
-		} else {
-			$img_url = 'http://placehold.it/208x271/&amp;text=N/A';
-		}
+				if ($actor->profile_path) {
+					$img_url = $client->config->images->base_url . $client->config->images->profile_sizes[2] . $actor->profile_path;
+				} else {
+					$img_url = 'http://placehold.it/208x271/&amp;text=N/A';
+				}
 		?>
 		<img src="<?php echo $img_url; ?>" alt="<?php echo $actor->name; ?>">
 		<h3><?php echo $actor->name; ?></h3>
 	</aside>
-
 	<?php
-			} else {
+			else:
 	?>
-
-	<p class="alert-box alert">We're sorry we couldn't find any results for "<?php echo $_GET['q']; ?>"</p>
-
+	<p class="alert-box alert">We're sorry we couldn't find any results for "<?php echo $query; ?>"</p>
 	<?php
-
-			}
-		}
+			endif; // if ($movies)
+		endif; // if ($query)
 	?>
 </section>
