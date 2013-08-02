@@ -42,7 +42,7 @@
 				}
 		?>
 		<div class='panel'>
-			<a href="site/person/?q=<?php echo $query; ?>&amp;id=<?php echo $actor->id; ?>">
+			<a href="index.php/site/person/?q=<?php echo $query; ?>&amp;id=<?php echo $actor->id; ?>">
 				<img src="<?php echo $img_url; ?>" alt="<?php echo $actor->name; ?>">
 				<h4><?php echo $actor->name; ?></h4>
 			</a>
@@ -68,7 +68,7 @@
 				}
 		?>
 		<div class='panel'>
-			<a href="site/movie/?q=<?php echo $query; ?>&amp;id=<?php echo $movie->id; ?>">
+			<a href="index.php/site/movie/?q=<?php echo $query; ?>&amp;id=<?php echo $movie->id; ?>">
 				<img src="<?php echo $img_url; ?>" alt="<?php echo $movie->title; ?>">
 				<h4><?php echo $movie->title; ?></h4>
 			</a>
