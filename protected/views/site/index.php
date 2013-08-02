@@ -22,6 +22,7 @@
 		</fieldset>
 	</form>
 </section>
+
 <?php
 	if ($query):
 ?>
@@ -32,8 +33,7 @@
 			if ($actors):
 				foreach ($actors as &$actor):
 	?>
-	<aside class="actor small large-4 small-6 columns">
-		<!-- <h3>Actor</h3> -->
+	<article class="actor result large-4 small-12 columns">
 		<?php
 				if ($actor->profile_path) {
 					$img_url = $client->config->images->base_url . $client->config->images->profile_sizes[2] . $actor->profile_path;
@@ -42,20 +42,53 @@
 				}
 		?>
 		<div class='panel'>
-			<a href="site/person/?q=<?php echo $_GET['q']; ?>&id=<?php echo $actor->id; ?>"><img src="<?php echo $img_url; ?>" alt="<?php echo $actor->name; ?>">
-			<h4><?php echo $actor->name; ?></h4></a>
+			<a href="site/person/?q=<?php echo $query; ?>&amp;id=<?php echo $actor->id; ?>">
+				<img src="<?php echo $img_url; ?>" alt="<?php echo $actor->name; ?>">
+				<h4><?php echo $actor->name; ?></h4>
+			</a>
 		</div>
-	</aside>
+	</article>
 	<?php
-				endforeach; //actors
+				endforeach; // $actors
 			else: // if ($actors)
 	?>
 	<p class="alert-box alert">We're sorry we couldn't find any actor/actress for "<?php echo $query; ?>"</p>
 	<?php
 			endif; // if ($actors)
-			?>
+		elseif ($type == 'movie'):
+			if ($movies):
+				foreach ($movies as $key=>$movie):
+	?>
+	<article class="movie result large-4 small-12 columns">
+		<?php
+				if ($movie->poster_path) {
+					$img_url = $client->config->images->base_url . $client->config->images->poster_sizes[2] . $movie->poster_path;
+				} else {
+					$img_url = 'http://placehold.it/208x271/&amp;text=N/A';
+				}
+		?>
+		<div class='panel'>
+			<a href="site/movie/?q=<?php echo $query; ?>&amp;id=<?php echo $movie->id; ?>">
+				<img src="<?php echo $img_url; ?>" alt="<?php echo $movie->title; ?>">
+				<h4><?php echo $movie->title; ?></h4>
+			</a>
+			<dl>
+				<?php if ($movie->release_date): ?><dt><i class="foundicon-calendar"></i>Release Date:</dt><dd><?php echo $movie->release_date; ?></dd><?php endif; ?>
+				<?php if ($movie->original_title): ?><dt><i class="foundicon-globe"></i>Original Title:</dt><dd><?php echo $movie->original_title; ?></dd><?php endif; ?>
+			</dl>
+		</div>
+	</article>
+	<?php
+					if ($key > 0 && ($key + 1) % 3 == 0) { echo '<hr/>'; };
+				endforeach; // $movies
+			else: // if ($movies)
+	?>
+	<p class="alert-box alert">We're sorry we couldn't find any movie for "<?php echo $query; ?>"</p>
+	<?php
+			endif; // if ($movies)
+		endif; // $type
+	?>
 </section>
 <?php
-		endif; // if ($type)
 	endif; // if ($query)
 ?>

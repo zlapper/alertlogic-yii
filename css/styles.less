@@ -27,6 +27,7 @@
 		}
 	// Lists
 		dl {
+			overflow: auto;
 			dt, dd {
 				float: left;
 			}
@@ -39,13 +40,17 @@
 			}
 		}
 	// Widgets
+		.result {
+			float: left !important;
+			text-align: center;
+			img {
+				max-height: 250px;
+			}
+		}
 		.actor {
-			&.small {
-				float: left !important;
-				text-align: center;
-				img {
-					max-height: 250px;
-				}
+		}
+		.movie {
+			&.result {
 			}
 		}
 
