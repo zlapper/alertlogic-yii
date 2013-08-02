@@ -86,7 +86,7 @@ class SiteController extends Controller {
 			$movie = $client->response;
 		}
 
-		$this->render('person', array('client'=>$client, 'id'=> $id, 'movie'=>$movie));
+		$this->render('movie', array('client'=>$client, 'id'=> $id, 'movie'=>$movie));
 	}
 
 	/**
