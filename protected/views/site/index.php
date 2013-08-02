@@ -73,8 +73,8 @@
 				<h4><?php echo $movie->title; ?></h4>
 			</a>
 			<dl>
-				<?php if ($movie->release_date): ?><dt><i class="foundicon-calendar"></i>Release Date:</dt><dd><?php echo $movie->release_date; ?></dd><?php endif; ?>
-				<?php if ($movie->original_title): ?><dt><i class="foundicon-globe"></i>Original Title:</dt><dd><?php echo $movie->original_title; ?></dd><?php endif; ?>
+				<?php if ($movie->release_date): ?><dt><i class="foundicon-calendar"></i> Release Date:</dt><dd><?php echo $movie->release_date; ?></dd><?php endif; ?>
+				<?php if ($movie->original_title): ?><dt><i class="foundicon-globe"></i> Original Title:</dt><dd><?php echo $movie->original_title; ?></dd><?php endif; ?>
 			</dl>
 		</div>
 	</article>

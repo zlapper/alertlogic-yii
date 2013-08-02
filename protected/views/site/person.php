@@ -16,10 +16,10 @@ if ($id):
 			<img src="<?php echo $img_url; ?>" alt="<?php echo $actor->name; ?>">
 		</figure>
 		<dl>
-			<?php if ($person->place_of_birth): ?><dt>Place of Birth:</dt><dd><?php echo $person->place_of_birth; ?></dd><?php endif; ?>
-			<?php if ($person->birthday): ?><dt>Birthday:</dt><dd><?php echo $person->birthday; ?></dd><?php endif; ?>
-			<?php if ($person->deathday): ?><dt>Date of death:</dt><dd><?php echo $person->deathday; ?></dd><?php endif; ?>
-			<?php if ($person->homepage): ?><dt>Website:</dt><dd><?php echo $person->homepage; ?></dd><?php endif; ?>
+			<?php if ($person->place_of_birth): ?><dt><i class="foundicon-location"></i> Place of Birth:</dt><dd><?php echo $person->place_of_birth; ?></dd><?php endif; ?>
+			<?php if ($person->birthday): ?><dt><i class="foundicon-calendar"></i> Birthday:</dt><dd><?php echo $person->birthday; ?></dd><?php endif; ?>
+			<?php if ($person->deathday): ?><dt><i class="foundicon-plus"></i> Date of death:</dt><dd><?php echo $person->deathday; ?></dd><?php endif; ?>
+			<?php if ($person->homepage): ?><dt><i class="foundicon-website"></i> Website:</dt><dd><?php echo $person->homepage; ?></dd><?php endif; ?>
 		</dl>
 	</aside>
 	<section class="large-8 columns">
